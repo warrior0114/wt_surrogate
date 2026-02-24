@@ -1,0 +1,463 @@
+{
+  "kept_feature_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44
+  ],
+  "kept_feature_names": [
+    "global_u_mean",
+    "global_v_mean",
+    "global_w_mean",
+    "global_u_std",
+    "global_v_std",
+    "global_w_std",
+    "global_tke",
+    "global_speed_max",
+    "global_gust_factor",
+    "global_grad_norm",
+    "hub_u_mean",
+    "hub_tke",
+    "yaw_u_mean",
+    "yaw_u_std",
+    "tip_u_mean",
+    "tip_speed_range",
+    "corr_u_mean",
+    "corr_tke",
+    "corr_ti_u",
+    "corr_flow_inclination",
+    "corr_flow_direction",
+    "vertical_shear_u",
+    "vertical_shear_w",
+    "vertical_shear_norm",
+    "lateral_asymmetry_u",
+    "lateral_asymmetry_v",
+    "lateral_tke_diff",
+    "lateral_asymmetry_speed",
+    "global_ti_total",
+    "global_anisotropy_ratio",
+    "global_reynolds_stress",
+    "hub_ti_total",
+    "tip_vorticity_strength",
+    "corr_turbulence_ratio",
+    "global_curvature_mean",
+    "global_laplacian_norm",
+    "spatial_heterogeneity",
+    "vertical_gradient_ratio",
+    "lateral_gradient_ratio",
+    "global_skewness_u",
+    "global_kurtosis_u",
+    "extreme_wind_ratio",
+    "kinetic_energy_density",
+    "shear_production_rate",
+    "energy_cascade_indicator"
+  ],
+  "info": {
+    "subsample_size": 150000,
+    "per_file_cap": 3000,
+    "max_files": 50,
+    "selection_table": [
+      {
+        "rank": 1,
+        "feature": "corr_u_mean",
+        "selection_score": 1.1005037295854339,
+        "relevance": 1.1005037295854339,
+        "redundancy": 0.0,
+        "original_index": 16
+      },
+      {
+        "rank": 2,
+        "feature": "global_tke",
+        "selection_score": 0.7616333029924776,
+        "relevance": 1.0174052867177028,
+        "redundancy": 0.5115439674504506,
+        "original_index": 6
+      },
+      {
+        "rank": 3,
+        "feature": "yaw_u_mean",
+        "selection_score": 0.7205611074915216,
+        "relevance": 1.0861041217528968,
+        "redundancy": 0.7310860285227505,
+        "original_index": 12
+      },
+      {
+        "rank": 4,
+        "feature": "corr_turbulence_ratio",
+        "selection_score": 0.718906841771825,
+        "relevance": 1.0495315201188113,
+        "redundancy": 0.6612493566939727,
+        "original_index": 33
+      },
+      {
+        "rank": 5,
+        "feature": "spatial_heterogeneity",
+        "selection_score": 0.7162846635114437,
+        "relevance": 1.0082527728484505,
+        "redundancy": 0.5839362186740135,
+        "original_index": 36
+      },
+      {
+        "rank": 6,
+        "feature": "hub_tke",
+        "selection_score": 0.7040839043064441,
+        "relevance": 0.9922389402364797,
+        "redundancy": 0.5763100718600713,
+        "original_index": 11
+      },
+      {
+        "rank": 7,
+        "feature": "kinetic_energy_density",
+        "selection_score": 0.7253611414278109,
+        "relevance": 1.09603801172354,
+        "redundancy": 0.741353740591458,
+        "original_index": 42
+      },
+      {
+        "rank": 8,
+        "feature": "global_ti_total",
+        "selection_score": 0.7088703193771202,
+        "relevance": 1.0593629085283789,
+        "redundancy": 0.7009851783025175,
+        "original_index": 28
+      },
+      {
+        "rank": 9,
+        "feature": "hub_u_mean",
+        "selection_score": 0.6903907516318419,
+        "relevance": 1.0965295147818077,
+        "redundancy": 0.8122775262999316,
+        "original_index": 10
+      },
+      {
+        "rank": 10,
+        "feature": "corr_tke",
+        "selection_score": 0.6815316570647993,
+        "relevance": 1.0180510879364653,
+        "redundancy": 0.6730388617433319,
+        "original_index": 17
+      },
+      {
+        "rank": 11,
+        "feature": "tip_u_mean",
+        "selection_score": 0.6817055493503802,
+        "relevance": 1.0557883959051158,
+        "redundancy": 0.7481656931094711,
+        "original_index": 14
+      },
+      {
+        "rank": 12,
+        "feature": "energy_cascade_indicator",
+        "selection_score": 0.6658709776628102,
+        "relevance": 1.0538315008270718,
+        "redundancy": 0.7759210463285231,
+        "original_index": 44
+      },
+      {
+        "rank": 13,
+        "feature": "global_u_mean",
+        "selection_score": 0.663856416871387,
+        "relevance": 1.0957264470074193,
+        "redundancy": 0.8637400602720647,
+        "original_index": 0
+      },
+      {
+        "rank": 14,
+        "feature": "tip_vorticity_strength",
+        "selection_score": 0.6526514272739088,
+        "relevance": 0.9404947358388623,
+        "redundancy": 0.5756866171299072,
+        "original_index": 32
+      },
+      {
+        "rank": 15,
+        "feature": "corr_ti_u",
+        "selection_score": 0.6535034536989462,
+        "relevance": 0.9584029189272721,
+        "redundancy": 0.6097989304566518,
+        "original_index": 18
+      },
+      {
+        "rank": 16,
+        "feature": "lateral_gradient_ratio",
+        "selection_score": 0.6480866947608637,
+        "relevance": 0.8743160709584815,
+        "redundancy": 0.4524587523952357,
+        "original_index": 38
+      },
+      {
+        "rank": 17,
+        "feature": "hub_ti_total",
+        "selection_score": 0.6473399369502311,
+        "relevance": 1.008052770670322,
+        "redundancy": 0.7214256674401818,
+        "original_index": 31
+      },
+      {
+        "rank": 18,
+        "feature": "lateral_asymmetry_speed",
+        "selection_score": 0.6353325882522084,
+        "relevance": 0.845526439424006,
+        "redundancy": 0.42038770234359507,
+        "original_index": 27
+      },
+      {
+        "rank": 19,
+        "feature": "global_anisotropy_ratio",
+        "selection_score": 0.6358551516859474,
+        "relevance": 0.827342454234074,
+        "redundancy": 0.38297460509625325,
+        "original_index": 29
+      },
+      {
+        "rank": 20,
+        "feature": "global_u_std",
+        "selection_score": 0.6413092418123445,
+        "relevance": 0.9286830775578642,
+        "redundancy": 0.5747476714910392,
+        "original_index": 3
+      },
+      {
+        "rank": 21,
+        "feature": "lateral_tke_diff",
+        "selection_score": 0.6374181140045618,
+        "relevance": 0.8049590176918754,
+        "redundancy": 0.33508180737462717,
+        "original_index": 26
+      },
+      {
+        "rank": 22,
+        "feature": "yaw_u_std",
+        "selection_score": 0.6379577427189138,
+        "relevance": 0.9523244973697595,
+        "redundancy": 0.6287335093016916,
+        "original_index": 13
+      },
+      {
+        "rank": 23,
+        "feature": "global_speed_max",
+        "selection_score": 0.6337254991971466,
+        "relevance": 0.925850416285552,
+        "redundancy": 0.5842498341768109,
+        "original_index": 7
+      },
+      {
+        "rank": 24,
+        "feature": "lateral_asymmetry_u",
+        "selection_score": 0.6216767703800301,
+        "relevance": 0.8410887063671013,
+        "redundancy": 0.4388238719741425,
+        "original_index": 24
+      },
+      {
+        "rank": 25,
+        "feature": "global_skewness_u",
+        "selection_score": 0.6209676669151671,
+        "relevance": 0.8509282792390699,
+        "redundancy": 0.45992122464780555,
+        "original_index": 39
+      },
+      {
+        "rank": 26,
+        "feature": "extreme_wind_ratio",
+        "selection_score": 0.6137364389621406,
+        "relevance": 0.8715412267650849,
+        "redundancy": 0.5156095756058887,
+        "original_index": 41
+      },
+      {
+        "rank": 27,
+        "feature": "global_gust_factor",
+        "selection_score": 0.600072499778871,
+        "relevance": 0.903029620310657,
+        "redundancy": 0.6059142410635721,
+        "original_index": 8
+      },
+      {
+        "rank": 28,
+        "feature": "global_kurtosis_u",
+        "selection_score": 0.5832903388877059,
+        "relevance": 0.7763402400856618,
+        "redundancy": 0.38609980239591185,
+        "original_index": 40
+      },
+      {
+        "rank": 29,
+        "feature": "tip_speed_range",
+        "selection_score": 0.5616696598608288,
+        "relevance": 0.86751485572885,
+        "redundancy": 0.6116903917360423,
+        "original_index": 15
+      },
+      {
+        "rank": 30,
+        "feature": "global_grad_norm",
+        "selection_score": 0.5456738044010601,
+        "relevance": 0.8548821322547905,
+        "redundancy": 0.618416655707461,
+        "original_index": 9
+      },
+      {
+        "rank": 31,
+        "feature": "global_laplacian_norm",
+        "selection_score": 0.5218595707331005,
+        "relevance": 0.8385193240436868,
+        "redundancy": 0.6333195066211725,
+        "original_index": 35
+      },
+      {
+        "rank": 32,
+        "feature": "vertical_shear_norm",
+        "selection_score": 0.4793033831347291,
+        "relevance": 0.7021627222624612,
+        "redundancy": 0.44571867825546435,
+        "original_index": 23
+      },
+      {
+        "rank": 33,
+        "feature": "vertical_shear_u",
+        "selection_score": 0.465265193249204,
+        "relevance": 0.7027895227468326,
+        "redundancy": 0.47504865899525717,
+        "original_index": 21
+      },
+      {
+        "rank": 34,
+        "feature": "vertical_gradient_ratio",
+        "selection_score": 0.34155295380595024,
+        "relevance": 0.4460459538166608,
+        "redundancy": 0.20898600002142106,
+        "original_index": 37
+      },
+      {
+        "rank": 35,
+        "feature": "shear_production_rate",
+        "selection_score": 0.33708582779103946,
+        "relevance": 0.46258133827163794,
+        "redundancy": 0.25099102096119696,
+        "original_index": 43
+      },
+      {
+        "rank": 36,
+        "feature": "corr_flow_direction",
+        "selection_score": 0.32103935854685195,
+        "relevance": 0.4599075754864157,
+        "redundancy": 0.2777364338791275,
+        "original_index": 20
+      },
+      {
+        "rank": 37,
+        "feature": "global_v_mean",
+        "selection_score": 0.30543802534807807,
+        "relevance": 0.4486466551080565,
+        "redundancy": 0.28641725951995683,
+        "original_index": 1
+      },
+      {
+        "rank": 38,
+        "feature": "lateral_asymmetry_v",
+        "selection_score": 0.30504408535852934,
+        "relevance": 0.4315165137368527,
+        "redundancy": 0.2529448567566467,
+        "original_index": 25
+      },
+      {
+        "rank": 39,
+        "feature": "corr_flow_inclination",
+        "selection_score": 0.3039783356781564,
+        "relevance": 0.40614608336233954,
+        "redundancy": 0.20433549536836623,
+        "original_index": 19
+      },
+      {
+        "rank": 40,
+        "feature": "global_reynolds_stress",
+        "selection_score": 0.30031748454238383,
+        "relevance": 0.4329303970968605,
+        "redundancy": 0.2652258251089533,
+        "original_index": 30
+      },
+      {
+        "rank": 41,
+        "feature": "global_w_mean",
+        "selection_score": 0.2963555729680444,
+        "relevance": 0.403386446975774,
+        "redundancy": 0.21406174801545924,
+        "original_index": 2
+      },
+      {
+        "rank": 42,
+        "feature": "global_v_std",
+        "selection_score": 0.2895617654408129,
+        "relevance": 0.5801514723056077,
+        "redundancy": 0.5811794137295896,
+        "original_index": 4
+      },
+      {
+        "rank": 43,
+        "feature": "global_curvature_mean",
+        "selection_score": 0.2755942895930708,
+        "relevance": 0.5726143311068957,
+        "redundancy": 0.5940400830276499,
+        "original_index": 34
+      },
+      {
+        "rank": 44,
+        "feature": "vertical_shear_w",
+        "selection_score": 0.26932858836815354,
+        "relevance": 0.38499544859674134,
+        "redundancy": 0.2313337204571756,
+        "original_index": 22
+      },
+      {
+        "rank": 45,
+        "feature": "global_w_std",
+        "selection_score": 0.26467134114803154,
+        "relevance": 0.5623941311794668,
+        "redundancy": 0.5954455800628705,
+        "original_index": 5
+      }
+    ]
+  }
+}

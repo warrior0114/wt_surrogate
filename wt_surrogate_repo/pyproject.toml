@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wt-surrogate"
+version = "0.1.0"
+description = "Wind turbine dynamic-response surrogate model + wind-field feature engineering"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [{name="Chen Shengqiao"}]
+dependencies = [
+  "numpy",
+  "pandas",
+  "tqdm",
+  "torch",
+  "scikit-learn",
+  "joblib",
+]
+
+[project.scripts]
+wt-build-npz = "wt_surrogate.cli.build_npz_dataset:main"
+wt-mrmr = "wt_surrogate.cli.mrmr_select:main"
+wt-train = "wt_surrogate.cli.train_surrogate:main"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["wt_surrogate*"]

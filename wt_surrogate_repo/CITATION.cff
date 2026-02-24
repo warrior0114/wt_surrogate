@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "wt-surrogate"
+version: "0.1.0"
+authors:
+  - family-names: "Chen"
+    given-names: "Shengqiao"
+license: "MIT"
+date-released: 2026-02-25

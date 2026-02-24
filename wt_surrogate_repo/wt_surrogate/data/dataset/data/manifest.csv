@@ -1,0 +1,5 @@
+case_id,stem,out_path,bts_path,n_samples,t_start,t_end,bts_dt,grid_in,wind_saved,wind_dtype,npz_path
+wind_90m_4.01mps_TI0_Yaw5,wind_90m_4.01mps_TI0_Yaw5,dataset\openfast_out\wind_90m_4.01mps_TI0_Yaw5.out,dataset/turbsim_bts\wind_90m_4.01mps_TI0_Yaw5.bts,5001,100.0,599.9999999999716,0.05000000074505806,31x31,1,float16,dataset\data\wind_90m_4.01mps_TI0_Yaw5_data.npz
+wind_90m_4.05mps_TI0_Yaw20,wind_90m_4.05mps_TI0_Yaw20,dataset\openfast_out\wind_90m_4.05mps_TI0_Yaw20.out,dataset/turbsim_bts\wind_90m_4.05mps_TI0_Yaw20.bts,5001,100.0,599.9999999999716,0.05000000074505806,31x31,1,float16,dataset\data\wind_90m_4.05mps_TI0_Yaw20_data.npz
+wind_90m_4.11mps_TI5_Yaw0,wind_90m_4.11mps_TI5_Yaw0,dataset\openfast_out\wind_90m_4.11mps_TI5_Yaw0.out,dataset/turbsim_bts\wind_90m_4.11mps_TI5_Yaw0.bts,5001,100.0,599.9999999999716,0.05000000074505806,31x31,1,float16,dataset\data\wind_90m_4.11mps_TI5_Yaw0_data.npz
+wind_90m_4.1mps_TI15_Yaw5,wind_90m_4.1mps_TI15_Yaw5,dataset\openfast_out\wind_90m_4.1mps_TI15_Yaw5.out,dataset/turbsim_bts\wind_90m_4.1mps_TI15_Yaw5.bts,5001,100.0,599.9999999999716,0.05000000074505806,31x31,1,float16,dataset\data\wind_90m_4.1mps_TI15_Yaw5_data.npz
