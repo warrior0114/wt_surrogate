@@ -8,39 +8,39 @@ def read_inflowwind(file_path):
 
 def write_inflowwind(file_path, lines):
     new_content = "".join(lines).encode("utf-8")
-    # 提取目录路径
+    # Extract directory path
     dir_path = os.path.dirname(file_path)
-    # 如果目录不存在，则递归创建
+    # If directory does not exist, create it recursively
     if dir_path and not os.path.exists(dir_path):
         os.makedirs(dir_path, exist_ok=True)
-    # 写入文件
+    # Write to file
     with open(file_path, "wb") as f:
         f.write(new_content)
 
 
 def modify_properties_inflowwind (RefHt, URef, btsfile_load):
     print("=====" + "create inflowwind" + "=====")
-    # 读取风生成参数文件
+    # Read wind generation parameter file
     input_path_create_inflowwindfile = "Wind/NRELOffshrBsline5MW_InflowWind_12mps.dat"
     output_path_inflowwindfile = "inflowwind_file/"+ str(RefHt) + "m_" + str(URef) + "mps" + ".dat"
     lines = read_inflowwind(input_path_create_inflowwindfile)
 
-    btsfile_load = str('"../'+ str(btsfile_load) +'"') # bts文件路径
+    btsfile_load = str('"../'+ str(btsfile_load) +'"') # bts file path
 
-    # 修改对应行的参数
-    ## bts文件路径
-    target_line_btsfile_load = 21  # 第22行
+    # Modify parameters in corresponding lines
+    ## bts file path
+    target_line_btsfile_load = 21  # Line 22
     original_line_btsfile_load = lines[target_line_btsfile_load]
     position_btsfile_load = original_line_btsfile_load.find("FileName_BTS")
-    new_line_btsfile_load =original_line_btsfile_load.replace(original_line_btsfile_load[0:position_btsfile_load], btsfile_load + "    ") # 赋值
-    lines[target_line_btsfile_load] = new_line_btsfile_load # 替换
+    new_line_btsfile_load = original_line_btsfile_load.replace(original_line_btsfile_load[0:position_btsfile_load], btsfile_load + "    ") # Assignment
+    lines[target_line_btsfile_load] = new_line_btsfile_load # Replace
     # print(lines[21])
  
     # print(lines[6])
 
-    # 写回文件
+    # Write back to file
     write_inflowwind(output_path_inflowwindfile, lines)
-    print(f"successful create   {output_path_inflowwindfile}")
+    print(f"Successfully created   {output_path_inflowwindfile}")
 
     return(output_path_inflowwindfile)
 
