@@ -1,20 +1,18 @@
-# --- 增强版特征提取器 PIFENet ---
+# --- PIFENet: Enhanced Feature Extractor ---
 
 import os
 import torch
 import torch.nn as nn
 import numpy as np
 
-
-
-# --- 测试函数 ---git add main_solver.py
+# --- Test Function ---
 def test_v8_extractor():
-    """测试 V8 版本的特征提取器"""
+    """Tests the V8 version of the feature extractor."""
     WEIGHTS_DIR = 'precomputed_weights_v3'
     if not os.path.exists(WEIGHTS_DIR):
-        print(f"错误: 找不到权重目录 '{WEIGHTS_DIR}'。请先运行权重生成脚本。")
-        # 为方便测试，如果目录不存在则创建虚拟权重文件
-        print("正在创建虚拟权重文件用于测试...")
+        print(f"Error: Weights directory '{WEIGHTS_DIR}' not found. Please run the weight generation script first.")
+        # Create dummy weight files for testing convenience if directory does not exist
+        print("Creating dummy weight files for testing...")
         os.makedirs(WEIGHTS_DIR, exist_ok=True)
         weight_files = {
             'w_hub.npy': np.ones((31, 31)), 'w_yaw_gaussian_60deg.npy': np.ones((31, 31)),
@@ -24,7 +22,7 @@ def test_v8_extractor():
         }
         for filename, arr in weight_files.items():
             np.save(os.path.join(WEIGHTS_DIR, filename), arr)
-        print("虚拟权重文件创建完毕。")
+        print("Dummy weight files created.")
 
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -44,18 +42,18 @@ def test_v8_extractor():
         print(f"\nFeature List ({len(model.feature_names)} features):")
         print("=" * 80)
         
-        # 按组显示特征
+        # Display features by group
         groups = [
-            ("全局基础特征", 0, 10),
-            ("权重区域特征", 10, 28),
-            ("湍流特性特征", 28, 34),
-            ("空间结构特征", 34, 39),
-            ("极值统计特征", 39, 42),
-            ("能量分布特征", 42, 45)
+            ("Global Basic Features", 0, 10),
+            ("Weighted Regional Features", 10, 28),
+            ("Turbulence Characteristics", 28, 34),
+            ("Spatial Structure Features", 34, 39),
+            ("Extreme Value Statistics", 39, 42),
+            ("Energy Distribution Features", 42, 45)
         ]
         
         for group_name, start, end in groups:
-            print(f"\n{group_name} ({end-start}个):")
+            print(f"\n{group_name} ({end-start} features):")
             for i in range(start, end):
                 if i < len(model.feature_names):
                     is_finite = torch.all(torch.isfinite(features[:, i])).item()
@@ -63,21 +61,21 @@ def test_v8_extractor():
                     print(f"  {i+1:02d}: {model.feature_names[i]:<35} {status}")
         
         print("\n" + "=" * 80)
-        print("特征统计:")
+        print("Feature Statistics:")
         num_valid_features = torch.sum(torch.all(torch.isfinite(features), dim=0)).item()
-        print(f"- 总特征数: {len(model.feature_names)}")
-        print(f"- 有效特征数 (无NaN/Inf): {num_valid_features}")
+        print(f"- Total Features: {len(model.feature_names)}")
+        print(f"- Valid Features (no NaN/Inf): {num_valid_features}")
         if num_valid_features > 0:
             valid_features = features[:, torch.all(torch.isfinite(features), dim=0)]
-            print(f"- 特征范围: [{valid_features.min().item():.4f}, {valid_features.max().item():.4f}]")
-            print(f"- 特征均值: {valid_features.mean().item():.4f}")
-            print(f"- 特征标准差: {valid_features.std().item():.4f}")
+            print(f"- Feature Range: [{valid_features.min().item():.4f}, {valid_features.max().item():.4f}]")
+            print(f"- Feature Mean: {valid_features.mean().item():.4f}")
+            print(f"- Feature Std Dev: {valid_features.std().item():.4f}")
         
         if num_valid_features < len(model.feature_names):
-            print("\n警告：部分特征计算结果为 NaN 或 Inf，请检查相关实现。")
+            print("\nWarning: Some feature calculations resulted in NaN or Inf. Please check the implementation.")
 
     except Exception as e:
-        print(f"测试过程中发生错误: {e}")
+        print(f"Error occurred during testing: {e}")
         import traceback
         traceback.print_exc()
 
