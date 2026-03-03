@@ -2,17 +2,7 @@
 
 import torch
 import torch.nn as nn
-from typing import Dict, List
-
-"""Dynamic multi-head MLP model.
-
-This module intentionally keeps backward-compatible constructor argument names to
-support older training scripts.
-"""
-
-import torch
-import torch.nn as nn
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 class DynamicMLPWindTurbineModel(nn.Module):
     """
@@ -103,55 +93,51 @@ class DynamicMLPWindTurbineModel(nn.Module):
         shared = self.mlp(x)
         return {name: self.output_heads[name](shared) for name in self.task_names}
 
-# --- 示例和测试代码 ---
+# --- Example and Test Code ---
 def test_dynamic_model():
-    # 1. 定义一个任务配置
-    # 假设我们这次想预测叶根载荷和偏航力矩
+    # 1. Define a task configuration
+    # Suppose we want to predict root loads and yaw moments
     my_task_config = {
-        'root_loads': 2,       # 预测 RootFxb1, RootMyb1 (2维)
-        'yaw_moments': 3     # 预测 YawBrMxp, YawBrMyp, YawBrMzp (3维)
+        'root_loads': 2,       # Predict RootFxb1, RootMyb1 (2 dimensions)
+        'yaw_moments': 3       # Predict YawBrMxp, YawBrMyp, YawBrMzp (3 dimensions)
     }
 
-    # 2. 创建模型
+    # 2. Create model
     model = DynamicMLPWindTurbineModel(
         feature_dim=13, 
         operational_param_dim=10,
         task_config=my_task_config
     )
-    print("\n动态模型已成功创建！结构如下：")
+    print("\nDynamic model created successfully! Structure:")
     print(model)
     model.eval()
 
-    # 3. 模拟输入数据
+    # 3. Simulate input data
     features_data = torch.randn(4, 13)
     operational_data = torch.randn(4, 10)
 
-    # 4. 前向传播
+    # 4. Forward pass
     with torch.no_grad():
         outputs = model(features_data, operational_data)
 
-    print("\n模型输出 (是一个字典):")
-    # 检查输出是否符合预期
+    print("\nModel Output (is a dictionary):")
+    # Check if output meets expectations
     for task_name, tensor in outputs.items():
-        print(f"  - 任务 '{task_name}': 输出形状 {tensor.shape}")
-        # 验证形状是否与配置匹配
+        print(f"  - Task '{task_name}': Output shape {tensor.shape}")
+        # Verify shape matches configuration
         assert tensor.shape == (4, my_task_config[task_name])
     
-    print("\n测试成功！模型能根据配置动态生成输出。")
+    print("\nTest successful! Model generates output dynamically based on configuration.")
     return model
 
 
 # --- START OF FILE model_v2_attentive_mlp.py ---
 
-import torch
-import torch.nn as nn
-from typing import Dict, List, Tuple
-
 class AttentiveMLPWindTurbineModel(nn.Module):
     """
-    带有嵌入式特征注意力的动态多头风力机MLP模型。
-    - 在进入主干网络前，增加一个可学习的注意力层来对输入特征进行加权。
-    - 能够直接输出学习到的特征重要性得分。
+    Dynamic multi-head MLP model for wind turbines with embedded feature attention.
+    - Adds a learnable attention layer to weight input features before entering the backbone.
+    - Capable of directly outputting learned feature importance scores.
     """
     def __init__(self, 
                  feature_dim: int, 
@@ -162,15 +148,15 @@ class AttentiveMLPWindTurbineModel(nn.Module):
                  dropout_rate: float = 0.2):
         super().__init__()
         
-        # ==================== 核心改动 1: 特征注意力层 ====================
-        # 创建一个与输入特征维度相同的可学习参数（权重）
+        # ==================== Core Change 1: Feature Attention Layer ====================
+        # Create a learnable parameter (weight) with the same dimension as input features
         self.feature_attention_logits = nn.Parameter(torch.ones(feature_dim))
-        # 使用Softmax确保所有权重加起来为1，便于解释
+        # Use Softmax to ensure all weights sum to 1 for interpretability
         self.feature_attention_activation = nn.Softmax(dim=-1)
-        print(f"--- 模型初始化: 添加了嵌入式特征注意力层 (维度: {feature_dim}) ---")
+        print(f"--- Model Initialization: Added embedded feature attention layer (dim: {feature_dim}) ---")
         # =================================================================
 
-        # 1. 工况参数分支 (与原版相同)
+        # 1. Operational parameter branch (same as original)
         op_layers = []
         input_op_dim = operational_param_dim
         for hidden_dim in op_branch_dims:
@@ -179,9 +165,9 @@ class AttentiveMLPWindTurbineModel(nn.Module):
             input_op_dim = hidden_dim
         self.operational_branch = nn.Sequential(*op_layers)
         
-        # 2. 共享主干MLP (与原版相同)
+        # 2. Shared Backbone MLP (same as original)
         mlp_layers = []
-        # 注意：这里的输入维度仍然是 feature_dim，因为注意力层不改变维度
+        # Note: Input dim here is still feature_dim because the attention layer does not change dimensions
         input_mlp_dim = feature_dim + op_branch_dims[-1]
         for hidden_dim in hidden_dims:
             mlp_layers.append(nn.Linear(input_mlp_dim, hidden_dim))
@@ -190,7 +176,7 @@ class AttentiveMLPWindTurbineModel(nn.Module):
             input_mlp_dim = hidden_dim
         self.mlp = nn.Sequential(*mlp_layers)
 
-        # 3. 动态创建输出头 (与原版相同)
+        # 3. Dynamically create output heads (same as original)
         final_shared_dim = hidden_dims[-1]
         self.output_heads = nn.ModuleDict()
         self.task_names = list(task_config.keys())
@@ -205,29 +191,29 @@ class AttentiveMLPWindTurbineModel(nn.Module):
 
     def get_feature_importance(self) -> torch.Tensor:
         """
-        辅助函数，用于在训练后获取特征重要性得分。
+        Helper function to get feature importance scores after training.
         """
         return self.feature_attention_activation(self.feature_attention_logits)
 
     def forward(self, features: torch.Tensor, operational_params: torch.Tensor) -> Tuple[Dict[str, torch.Tensor], torch.Tensor]:
         """
-        前向传播。
+        Forward pass.
         
         Returns:
-            - predictions (Dict): 预测值的字典
-            - attention_weights (Tensor): 学习到的特征权重
+            - predictions (Dict): Dictionary of predicted values
+            - attention_weights (Tensor): Learned feature weights
         """
-        # ==================== 核心改动 2: 应用注意力权重 ====================
-        # 计算特征注意力权重
+        # ==================== Core Change 2: Apply Attention Weights ====================
+        # Calculate feature attention weights
         attention_weights = self.feature_attention_activation(self.feature_attention_logits)
         
-        # 将权重应用到输入特征上
+        # Apply weights to input features
         # features: [batch_size, feature_dim]
-        # attention_weights: [feature_dim] -> PyTorch会自动广播
+        # attention_weights: [feature_dim] -> PyTorch will automatically broadcast
         features_att = features * attention_weights
         # =================================================================
 
-        # 后续流程与原版相同，但使用加权后的 features_att
+        # Subsequent process is the same as original, but uses weighted features_att
         op_features = self.operational_branch(operational_params)
         x = torch.cat([features_att, op_features], dim=1)
         shared_features = self.mlp(x)
@@ -238,10 +224,10 @@ class AttentiveMLPWindTurbineModel(nn.Module):
             
         return outputs, attention_weights
 
-# --- 测试函数 ---
+# --- Test Function ---
 def test_attentive_mlp_model():
     my_task_config = {'loads': 6}
-    FEATURE_DIM = 45 # 真实特征维度
+    FEATURE_DIM = 45 # Actual feature dimension
     
     model = AttentiveMLPWindTurbineModel(
         feature_dim=FEATURE_DIM, 
@@ -252,20 +238,19 @@ def test_attentive_mlp_model():
     features_data = torch.randn(4, FEATURE_DIM)
     op_data = torch.randn(4, 6)
     
-    # forward现在返回两个值
+    # forward now returns two values
     predictions, weights = model(features_data, op_data)
     
-    print("\n模型输出形状:", predictions['loads'].shape)
+    print("\nModel output shape:", predictions['loads'].shape)
     assert predictions['loads'].shape == (4, 6)
     
-    print("注意力权重形状:", weights.shape)
+    print("Attention weights shape:", weights.shape)
     assert weights.shape == (FEATURE_DIM,)
     
     importance = model.get_feature_importance()
-    print("提取的重要性得分总和 (应约等于1):", importance.sum().item())
+    print("Sum of extracted importance scores (should be approx 1):", importance.sum().item())
     assert torch.isclose(importance.sum(), torch.tensor(1.0))
-    print("\n测试成功！")
+    print("\nTest successful!")
 
 if __name__ == "__main__":
     test_attentive_mlp_model()
-
