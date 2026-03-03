@@ -11,7 +11,7 @@ def test_v8_extractor():
     WEIGHTS_DIR = 'precomputed_weights_v3'
     if not os.path.exists(WEIGHTS_DIR):
         print(f"Error: Weights directory '{WEIGHTS_DIR}' not found. Please run the weight generation script first.")
-        # Create dummy weight files for testing convenience if directory does not exist
+      
         print("Creating dummy weight files for testing...")
         os.makedirs(WEIGHTS_DIR, exist_ok=True)
         weight_files = {
