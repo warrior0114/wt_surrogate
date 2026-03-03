@@ -61,10 +61,9 @@ def _get_extractor(weights_dir: str, device: str = 'cpu'):
     global _EXTRACTOR, _EXTRACTOR_DEVICE, _EXTRACTOR_WEIGHTS_DIR
     if _EXTRACTOR is not None and _EXTRACTOR_DEVICE == device and _EXTRACTOR_WEIGHTS_DIR == weights_dir:
         return _EXTRACTOR
-    if PIFENet is None:
-        raise ImportError("无法导入 wt_surrogate.features.PIFENet.PIFENet；请确认已安装本包及其依赖")
+   
     if not weights_dir or (not os.path.exists(weights_dir)):
-        raise FileNotFoundError(f"weights_dir 不存在: {weights_dir}")
+        raise FileNotFoundError(f"weights_dir : {weights_dir}")
     dev = torch.device(device)
     ex = PIFENet(weights_dir=weights_dir).to(dev)
     ex.eval()
@@ -80,13 +79,13 @@ def _extract_features_from_npz(data: np.lib.npyio.NpzFile, row_idx: np.ndarray, 
     if 'wind' in data.files and data['wind'] is not None:
         wind_all = data['wind']
         if wind_all.ndim != 4:
-            raise ValueError(f"npz wind 期望 4D (T,3,ny,nz)，got {wind_all.shape}")
+            raise ValueError(f"npz wind expects 4D (T,3,ny,nz), got {wind_all.shape}")
         wind = wind_all[row_idx].astype(np.float32, copy=False)
     else:
         if read_bts_official is None:
-            raise ImportError("npz 没有 wind，且无法导入 read.read_bts_official 来读取 .bts")
+            raise ImportError("npz has no wind, and cannot import read_bts_official to read .bts")
         if 'bts_path' not in data.files:
-            raise KeyError("npz 缺少 wind 与 bts_path，无法提取特征")
+            raise KeyError("npz missing wind and bts_path, cannot extract features")
         bts_path = _npz_scalar_to_str(data['bts_path'])
         # If path is relative, resolve against the folder containing the .npz (common in dataset export)
         if not os.path.isabs(bts_path):
@@ -95,12 +94,12 @@ def _extract_features_from_npz(data: np.lib.npyio.NpzFile, row_idx: np.ndarray, 
                 bts_path = os.path.join(base_dir, bts_path)
         header, wind_data = read_bts_official(bts_path)
         if wind_data is None:
-            raise ValueError(f"读取 bts 失败: {bts_path}")
+            raise ValueError(f"Failed to read bts: {bts_path}")
         if 'wind_idx' in data.files and data['wind_idx'] is not None:
             idx_all = data['wind_idx'].astype(np.int64)
         else:
             if 'time' not in data.files or 'bts_dt' not in data.files:
-                raise KeyError("npz 缺少 wind_idx，且缺少 time/bts_dt 无法对齐 BTS")
+                raise KeyError("npz missing wind_idx, and missing time/bts_dt to align BTS")
             t = data['time'].astype(np.float64)
             bts_dt = float(data['bts_dt'])
             idx_all = np.clip(np.round(t / bts_dt).astype(np.int64), 0, wind_data.shape[0] - 1)
@@ -182,7 +181,7 @@ def calculate_feature_mi_matrix_parallel(
       - 'threading': lower overhead, no big data copy
       - 'loky': safer RNG isolation, but may copy data to processes
     """
-    print("正在并行计算特征间互信息矩阵 (冗余度)...")
+    print("Calculating feature mutual information matrix (redundancy) in parallel...")
     n_features = df_features.shape[1]
 
     # Discretize
@@ -206,7 +205,7 @@ def calculate_feature_mi_matrix_parallel(
 
     results = Parallel(n_jobs=n_jobs, backend=backend)(
         delayed(_calculate_mi_for_one_column)(i, features_discrete, n_features, random_state)
-        for i in tqdm(range(n_features), desc="分派MI计算任务")
+        for i in tqdm(range(n_features), desc="Dispatching MI tasks")
     )
 
     mi_matrix = np.zeros((n_features, n_features), dtype=np.float64)
@@ -232,20 +231,20 @@ def _sample_rows_from_one_file(
     """
     Load one .npz and sample up to max_rows rows. Returns (X, Y, feature_names, output_names).
 
-    支持两种格式：
-      1) 旧格式：.npz 内含 precomputed 'features' / 'feature_names'
-      2) 新格式：不含 'features'，而是含 'wind'（或 bts_path + wind_idx/time），在此处按需提取特征
+    Supports two formats:
+      1) Old format: .npz contains precomputed 'features' / 'feature_names'
+      2) New format: No 'features', contains 'wind' (or bts_path + wind_idx/time), features extracted on demand.
     """
     data = np.load(fp, allow_pickle=True)
 
     if "output_params" not in data.files:
-        raise KeyError(f"{os.path.basename(fp)} 缺少 output_params")
+        raise KeyError(f"{os.path.basename(fp)} missing output_params")
 
     Yfull = data["output_params"]
     output_names = _as_str_list(data["output_names"]) if "output_names" in data.files else _as_str_list(ALL_OUTPUT_COLS_FALLBACK)
 
     if Yfull.ndim != 2:
-        raise ValueError(f"{os.path.basename(fp)}: output_params 期望二维数组, got {Yfull.shape}")
+        raise ValueError(f"{os.path.basename(fp)}: output_params expects 2D array, got {Yfull.shape}")
 
     Y = Yfull[:, target_indices]
     n = int(Y.shape[0])
@@ -265,12 +264,12 @@ def _sample_rows_from_one_file(
     if "features" in data.files:
         Xfull = data["features"]
         if Xfull.ndim != 2:
-            raise ValueError(f"{os.path.basename(fp)}: features 期望二维数组, got {Xfull.shape}")
+            raise ValueError(f"{os.path.basename(fp)}: features expects 2D array, got {Xfull.shape}")
         X = Xfull[row_idx].astype(np.float32, copy=False)
         feature_names = _as_str_list(data["feature_names"]) if "feature_names" in data.files else [f"feat_{i}" for i in range(X.shape[1])]
     else:
         if weights_dir is None:
-            raise ValueError("npz 不含 features，需提供 weights_dir 才能同步提取特征")
+            raise ValueError("npz does not contain features, weights_dir is required for on-the-fly extraction")
         X, feature_names = _extract_features_from_npz(data, row_idx, weights_dir=weights_dir, device=device)
 
     if ref_output_names is not None and ref_output_names and output_names != ref_output_names:
@@ -302,11 +301,11 @@ def select_features_mimr(
     - Loads files memory-safely by sampling up to per_file_cap rows from each file,
       then globally downsamples to subsample_size if still too large.
     """
-    print(f"--- 开始mRMR特征选择流程 (beta={beta}) ---")
+    print(f"--- Starting mRMR feature selection process (beta={beta}) ---")
 
     npz_files = _list_npz_files(features_dir)
     if not npz_files:
-        raise FileNotFoundError(f"目录中未找到 .npz 文件: {features_dir}")
+        raise FileNotFoundError(f"No .npz files found in directory: {features_dir}")
 
     # Optional limit to speed up selection in large datasets
     if max_files is not None:
@@ -328,7 +327,7 @@ def select_features_mimr(
     out_map: Dict[str, int] = {name: i for i, name in enumerate(output_names)}
     missing = [c for c in target_cols if c not in out_map]
     if missing:
-        raise KeyError(f"目标列缺失: {missing}. output_names={output_names}")
+        raise KeyError(f"Target columns missing: {missing}. output_names={output_names}")
 
     target_indices = [out_map[name] for name in target_cols]
 
@@ -337,14 +336,14 @@ def select_features_mimr(
         # heuristic: 3x the equal-share, at least 500, at most 20000
         per_file_cap = int(np.clip(np.ceil(subsample_size / max(len(npz_files), 1)) * 3, 500, 20000))
 
-    print(f"采样策略: 每个文件最多采样 {per_file_cap} 行; 最终全局上限 subsample_size={subsample_size}")
+    print(f"Sampling strategy: Max {per_file_cap} rows per file; Global cap subsample_size={subsample_size}")
 
     # Load sampled rows per file
     X_list, Y_list = [], []
     ref_output_names = output_names
     ref_feature_names = feature_names
 
-    for f in tqdm(npz_files, desc="读取并采样 .npz"):
+    for f in tqdm(npz_files, desc="Reading and sampling .npz"):
         fp = os.path.join(features_dir, f)
         Xi, Yi, feat_names_i, out_names_i = _sample_rows_from_one_file(
             fp=fp,
@@ -374,12 +373,12 @@ def select_features_mimr(
 
     df_features = pd.DataFrame(X, columns=feature_names)
     df_targets = pd.DataFrame(Y, columns=target_cols)
-    print(f"用于MI计算的数据规模: {df_features.shape[0]} 样本, {df_features.shape[1]} 特征")
+    print(f"Data size for MI calculation: {df_features.shape[0]} samples, {df_features.shape[1]} features")
 
     # Step 1: MI(feature; target) relevance
-    print("\n步骤1: 计算互信息 (Feature; Target) 相关性...")
+    print("\nStep 1: Calculating Mutual Information (Feature; Target) Relevance...")
     mi_scores = pd.DataFrame(index=df_features.columns)
-    for target in tqdm(target_cols, desc="计算MI(Feature;Target)"):
+    for target in tqdm(target_cols, desc="Calculating MI(Feature;Target)"):
         mi_scores[target] = mutual_info_regression(df_features, df_targets[target], random_state=random_state)
     mi_scores["relevance"] = mi_scores.mean(axis=1)
 
@@ -389,7 +388,7 @@ def select_features_mimr(
     )
 
     # Step 3: iterative selection
-    print("\n步骤3: 迭代式mRMR选择...")
+    print("\nStep 3: Iterative mRMR selection...")
     remaining = list(df_features.columns)
     selected: List[str] = []
     selection_info = []
@@ -407,12 +406,12 @@ def select_features_mimr(
 
     if num_features_to_select is not None:
         iterations = max(num_features_to_select - 1, 0)
-        print(f"将选择固定数量特征: {num_features_to_select}")
+        print(f"Selecting fixed number of features: {num_features_to_select}")
     else:
         iterations = len(remaining)
-        print(f"将使用阈值法自动停止, 阈值={selection_score_threshold}")
+        print(f"Using threshold stopping criteria, threshold={selection_score_threshold}")
 
-    for k in tqdm(range(iterations), desc="选择最优特征"):
+    for k in tqdm(range(iterations), desc="Selecting best features"):
         if not remaining:
             break
 
@@ -428,7 +427,7 @@ def select_features_mimr(
 
         if selection_score_threshold is not None and num_features_to_select is None:
             if best["score"] < selection_score_threshold:
-                print(f"\n停止: 最佳候选 '{best['feature']}' 得分 {best['score']:.6f} < 阈值 {selection_score_threshold}")
+                print(f"\nStopping: Best candidate '{best['feature']}' score {best['score']:.6f} < threshold {selection_score_threshold}")
                 break
 
         selected.append(best["feature"])
@@ -450,10 +449,10 @@ def select_features_mimr(
     kept_indices = sorted(final_df["original_index"].tolist())
 
     print("\n" + "=" * 80)
-    print("mRMR 最终结果")
+    print("mRMR Final Results")
     print("=" * 80)
     print(final_df[["feature", "original_index", "selection_score", "relevance", "redundancy"]])
-    print("\n建议保留特征原始索引 (sorted):")
+    print("\nRecommended feature indices to keep (sorted):")
     print(kept_indices)
 
     # Save full score table
@@ -467,6 +466,6 @@ def select_features_mimr(
 
     out_csv = os.path.join(features_dir, "mimr_feature_scores.csv")
     all_scores_df.to_csv(out_csv, index=False, float_format="%.6f")
-    print(f"\n已保存所有特征得分到: {out_csv}")
+    print(f"\nAll feature scores saved to: {out_csv}")
 
     return kept_indices, final_df
